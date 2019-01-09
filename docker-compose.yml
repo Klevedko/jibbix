@@ -1,0 +1,22 @@
+version: "3.7"
+services:
+  jibbix:
+    image: 538721144237.dkr.ecr.eu-west-1.amazonaws.com/jibbix:latest
+    env_file: .env
+    deploy:
+      placement:
+        constraints:
+          [node.labels.type == office]
+      restart_policy:
+        condition: none
+        #delay: 3600s
+#    environment:
+#      SUPER_SECRET: /run/secrets/super_secret
+#    secrets:
+#      - super_secret
+#      - db_pass
+#secrets:
+#  super_secret:
+#    external: true
+#  db_pass:
+#    external: true
