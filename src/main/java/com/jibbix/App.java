@@ -18,8 +18,8 @@ public class App {
 
     public static void main(String[] args) {
         logger.debug("start at " + new Date());
-        readPropertiesFromConfigFile();
-        //readPropertiesFromEnvFile();
+        //readPropertiesFromConfigFile();
+        readPropertiesFromEnvFile();
         startWork();
     }
 }
