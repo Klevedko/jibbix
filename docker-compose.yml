@@ -10,7 +10,7 @@ services:
       restart_policy:
         condition: none
       labels:
-         - io.portainer.uac.teams=1,2,3,4,5
+         - io.portainer.uac.teamss=1,2,3,4,5
         #delay: 3600s
 #    environment:
 #      SUPER_SECRET: /run/secrets/super_secret
