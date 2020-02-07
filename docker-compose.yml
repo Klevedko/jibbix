@@ -1,24 +1,112 @@
 version: "3.7"
 services:
-  jibbix:
-    image: 538721144237.dkr.ecr.eu-west-1.amazonaws.com/jibbix:latest
-    env_file: .env
+
+  ffoms_scanner:
+    image: 538721144237.dkr.ecr.eu-west-1.amazonaws.com/jibbix:ffoms
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.60'
+          memory: 512M
+      placement:
+        constraints:
+          - node.labels.type == db
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - env
+    environment:
+      ZABBIX_ADDRESS: http://zabbix.ffoms.ru/zabbix/api_jsonrpc.php
+      ZABBIX_USER: user
+      ZABBIX_PASSWORD: pass
+      JIRA_ADDRESS: https://jira.domain.ru
+      JIRA_USER: jirauser
+      JIRA_PASSWORD: pass
+      JIRA_INOVUS_PROJECT: '2020. ГИС ОМС. Сопровождение и техническая поддержка'
+      JIRA_PROJECT_KEY: FFOMSSUPP
+      JIRA_COMPONENT: Zabbix
+      TRIGGER_ID_EXCLUDE: ''
+      TRIGGERS_ASSIGNEE_OFV: '31069,31093,31061,31035,31105,31071,31081,31029,31023,31043,31059,31057,31063,31047,31033,31037,31053,31041,31101,31051,31031,31007,31103,31055,31089,31073,31067,31107,31045,31075,31065,31099,31039,31091,31087,31077,31049,31083,31027,31097,31085,31079,31095,31025'
+      ASSIGNEE_OFV: eermolaeva
+
+  Inovus_scanner:
+    image: 538721144237.dkr.ecr.eu-west-1.amazonaws.com/jibbix:Inovus
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.60'
+          memory: 512M
+      placement:
+        constraints:
+          - node.labels.type == db
+      restart_policy:
+        condition: on-failure
+    environment:
+      ZABBIX_ADDRESS: https://zabbix.domain.ru/api_jsonrpc.php
+      ZABBIX_USER: jirauser
+      ZABBIX_PASSWORD: pass
+      JIRA_ADDRESS: https://jira.domain.ru
+      JIRA_USER: jirauser
+      JIRA_PASSWORD: pass
+      JIRA_INOVUS_PROJECT: 'ОБЩИЕ вопросы'
+      JIRA_PROJECT_KEY: II
+      JIRA_COMPONENT: Zabbix
+      TRIGGER_ID_EXCLUDE: '75497,68320,64554,13334,13350,13366,13382,13398,13414,13435,64553,64135,65352,64557,75968,34439,64154,64162,64163,64876,64877,64558,64816,64817,64820,64587,64588,64847,64881,75473,65064,64134,43462,43464,43465,43463,71576,43490,43491,43492,43493,75662,66530,40430,40431,40432,40433,40473,40474,40475,40476,34435,40516,40517,40518,40519,40559,40560,40562,37358,37133,37709,40561,75664,64149,65378,64846,64097,68513,64105,76222,76223,76224,68512,76225,60262,61305,61313,68482,68483,64098,64104,66504,64128,64583,64584,75665,64613,75663,60270,61307,61319,60263,60269,64821,64850,64851,64880,64614,64617,64618,68598,65068,65069,65065,65214,65215,65218,65219,76044,63996,63982,65094,65184,65185,65188,65189,65095,65098,65099,65154,65155,65158,65159,51509,64127,65903,65904,65907,65910,76078,76079,66047,76080,76081,68481,68484,68660,68663,65994,65124,75965,75966,68599,68629,68600,68601,68568,68569,68570,68691,68692,68630,68631,68632,68662,60376,76007,60362,75872,60370,68515,65394,68661,66051,68514,68567,68693,68694,65129,76043,66017,65603,37356,67706,66149,65317,70434,70436,70385,65128,60364,66084,66278,64523,65424,70655,67799,65039,75709,65988,64300,66365,65547,65425,65428,37814,64306,60537,66078,63567,64969,67830,37137,65455,75871,75967,76045,76004,76006,76046,65320,60475,67612,64294,76005,68914,37362,51510,67798,37463,64292,75874,37713,60529,65958,63581,34648,66414,67737,75707,66077,70657,65987,66048,66054,67736,67676,70435,66286,67800,67829,64528,65429,66021,66024,60329,60331,63575,67860,66412,70386,66304,75708,65604,64044,67767,67768,65543,63987,67801,67831,70384,63918,70387,65548,65607,65608,70656,67707,67708,71578,67769,67770,65125,60337,65573,65578,68915,63916,67738,67739,64037,64038,64688,64045,70433,65577,67832,67613,67614,67615,65574,60343,65328,60469,66241,63995,63924,63930,75873,75706,63569,34536,37933,60531,72265,70658,67705,66268,72264,68916,68917,67644,67645,67646,65459,65544,51447,75299,75301,64693,64524,64527,67862,65458,67643,64692,51443,64689,51444,68957,68956,65034,68958,65035,37581,60543,65038,65957,64940,64941,64944,68955,65310,65961,65964,65513,65514,65517,65518,65991,66018,71575,72266,72267,66234,66244,66252,51513,51519,66364,66366,64975,51453,64968,64972,65395,65398,65399,65454,75300,75302,64945,66367,67863,66413,37238,71577,66415,66150,66081,71544,71545,71546,71547,66153,66156,67861,60461,60463,67674,67675,67677,68318,68319,68320,68321,66275'
+      JAVA_OPTS: '-Xmx513M -Xms513M'
+
+  ffoms_emitter:
+    image: 538721144237.dkr.ecr.eu-west-1.amazonaws.com/jibbix:emitter
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.60'
+          memory: 512M
+      placement:
+        constraints:
+          - node.labels.type == db
+      restart_policy:
+        condition: on-failure
+    env_file:
+      - env
+    environment:
+      ZABBIX_ADDRESS: http://zabbix.ffoms.ru/zabbix/api_jsonrpc.php
+      ZABBIX_USER: user
+      ZABBIX_PASSWORD: pass
+      JIRA_ADDRESS: https://jira.domain.ru
+      JIRA_USER: jirauser
+      JIRA_PASSWORD: pass
+      JIRA_INOVUS_PROJECT: '2020. ГИС ОМС. Сопровождение и техническая поддержка'
+      JIRA_PROJECT_KEY: FFOMSSUPP
+      JIRA_COMPONENT: Zabbix
+      SCANISSUESTATUS: 'ПЕРЕДАЧА в СТП'
+      CLOSEISSUETRAINSITION: 831
+      REGIONCOMJIRAURI: https://servicedesc.domain.ru/rest/servicedeskapi/request
+
+  db:
+    image: postgres:10.4-alpine
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: issues
+    volumes:
+      - db-data:/var/lib/postgresql/data/pgdata
+    ports:
+      - "7072:5432"
     deploy:
       placement:
         constraints:
-          [node.labels.type == office]
-      restart_policy:
-        condition: none
-      labels:
-         - io.portainer.uac.teams=1,2,3,4,5
-        #delay: 3600s
-#    environment:
-#      SUPER_SECRET: /run/secrets/super_secret
-#    secrets:
-#      - super_secret
-#      - db_pass
-#secrets:
-#  super_secret:
-#    external: true
-#  db_pass:
-#    external: true
+          - node.labels.type == db
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 512M
+
+volumes:
+  db-data:
